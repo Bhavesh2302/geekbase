@@ -39,7 +39,9 @@ export const connectDB = async (): Promise<typeof mongoose> => {
   });
 
   try {
-    const conn = await mongoose.connect(env.MONGO_URL, {
+    // Normalize connection URL if it has a trailing slash before query parameters (e.g. /geekbase/? -> /geekbase?)
+    const sanitizedUrl = env.MONGO_URL.replace(/\/(\?|$)/, '$1');
+    const conn = await mongoose.connect(sanitizedUrl, {
       autoIndex: true,
       serverSelectionTimeoutMS: 10000,
     });

@@ -60,7 +60,4 @@ const userSchema = new Schema<IUserDocument>(
   }
 );
 
-// Indexes
-userSchema.index({ email: 1 }, { unique: true });
-
 export const User: Model<IUserDocument> = model<IUserDocument>('User', userSchema);
