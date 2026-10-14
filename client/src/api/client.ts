@@ -40,6 +40,8 @@ export const apiClient: AxiosInstance = axios.create({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-CSRF-Protection': '1',
   },
 });
 
