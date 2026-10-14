@@ -6,6 +6,7 @@ import topicRoutes from './topic.routes';
 import problemRoutes from './problem.routes';
 import progressRoutes from './progress.routes';
 import studyPlanRoutes from './studyPlan.routes';
+import dashboardRoutes from './dashboard.routes';
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use('/topics', topicRoutes);
 router.use('/problems', problemRoutes);
 router.use('/progress', progressRoutes);
 router.use('/study-plans', studyPlanRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 export default router;
