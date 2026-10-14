@@ -5,6 +5,7 @@ import chapterRoutes from './chapter.routes';
 import topicRoutes from './topic.routes';
 import problemRoutes from './problem.routes';
 import progressRoutes from './progress.routes';
+import studyPlanRoutes from './studyPlan.routes';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use('/chapters', chapterRoutes);
 router.use('/topics', topicRoutes);
 router.use('/problems', problemRoutes);
 router.use('/progress', progressRoutes);
+router.use('/study-plans', studyPlanRoutes);
 
 export default router;
