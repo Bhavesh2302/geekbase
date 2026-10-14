@@ -2,10 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { DashboardService } from '../dbservices/dashboard.service';
 import { sendSuccess } from '../utils/apiResponse';
 
-/**
- * GET /api/v1/dashboard/summary
- * Retrieves overall student dashboard metrics, upcoming plans, and continue-learning recommendation
- */
 export const getDashboardSummary = async (
   req: Request,
   res: Response,

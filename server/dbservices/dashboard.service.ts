@@ -75,13 +75,8 @@ export class DashboardService {
         ? currentDate
         : new Date().toISOString().slice(0, 10);
 
-    // Parallel execution of:
-    // 1. Chapter-wise progress aggregation (database-side counts)
-    // 2. Recent completed problems (indexed query, top 5)
-    // 3. Upcoming study plans (indexed query, top 5)
     const [chapterAggResults, recentlyCompletedDocs, upcomingStudyPlansDocs] =
       await Promise.all([
-        // 1. Chapter-wise breakdown pipeline
         Chapter.aggregate([
           { $match: { isActive: true } },
           { $sort: { order: 1 } },
@@ -133,7 +128,6 @@ export class DashboardService {
           },
         ]),
 
-        // 2. Recently completed problems (index on userId, isCompleted)
         UserProgress.find({
           userId: userObjId,
           isCompleted: true,
@@ -143,7 +137,6 @@ export class DashboardService {
           .populate('problemId', 'title slug difficulty topicId')
           .lean(),
 
-        // 3. Upcoming study plans (index on userId, scheduledDate)
         StudyPlan.find({
           userId: userObjId,
           scheduledDate: { $gte: todayStr },

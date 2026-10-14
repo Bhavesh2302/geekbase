@@ -56,7 +56,7 @@ export const getProblemsQuerySchema = {
       .number()
       .int('Limit must be an integer')
       .positive('Limit must be greater than 0')
-      .max(100, 'Limit cannot exceed 100 items per page')
+      .max(1000, 'Limit cannot exceed 1000 items per page')
       .default(20),
   }),
 };

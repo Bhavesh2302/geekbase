@@ -9,9 +9,6 @@ export interface ApiResponse<T = unknown> {
   timestamp: string;
 }
 
-/**
- * Standardized success response helper
- */
 export const sendSuccess = <T>(
   res: Response,
   data?: T,
@@ -29,9 +26,6 @@ export const sendSuccess = <T>(
   return res.status(statusCode).json(payload);
 };
 
-/**
- * Standardized error response helper
- */
 export const sendError = (
   res: Response,
   message = 'An unexpected error occurred',

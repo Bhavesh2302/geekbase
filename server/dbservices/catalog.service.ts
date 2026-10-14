@@ -17,10 +17,6 @@ const escapeRegex = (text: string): string => {
 };
 
 export class CatalogService {
-  /**
-   * Retrieves all active chapters ordered by sequence with topic & problem counts
-   * Uses single aggregation pipeline to eliminate N+1 queries.
-   */
   static async getAllChapters() {
     return Chapter.aggregate([
       { $match: { isActive: true } },
@@ -58,9 +54,6 @@ export class CatalogService {
     ]);
   }
 
-  /**
-   * Retrieves single chapter by ID with its ordered topics
-   */
   static async getChapterById(
     chapterId: string
   ): Promise<Record<string, unknown>> {
@@ -80,9 +73,6 @@ export class CatalogService {
     };
   }
 
-  /**
-   * Retrieves topics optionally filtered by chapterId with problem counts
-   */
   static async getTopics(chapterId?: string) {
     if (chapterId) {
       const chapter = await Chapter.findById(chapterId);
@@ -123,9 +113,6 @@ export class CatalogService {
     ]);
   }
 
-  /**
-   * Retrieves paginated problems with optional topic, difficulty, and search filters
-   */
   static async getProblems(filter: GetProblemsFilter) {
     const { topicId, difficulty, search, page, limit } = filter;
 
@@ -175,9 +162,6 @@ export class CatalogService {
     };
   }
 
-  /**
-   * Retrieves single problem by ID with populated topic and chapter context
-   */
   static async getProblemById(problemId: string) {
     const problem = await Problem.findById(problemId)
       .populate({

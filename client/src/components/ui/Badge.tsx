@@ -65,9 +65,6 @@ export const Badge: React.FC<BadgeProps> = ({
   );
 };
 
-/**
- * Dedicated Difficulty Badge for Problems
- */
 export const DifficultyBadge: React.FC<{
   difficulty: ProblemDifficulty;
   size?: 'sm' | 'md';
@@ -87,9 +84,6 @@ export const DifficultyBadge: React.FC<{
   );
 };
 
-/**
- * Dedicated Status Badge for Study Plans
- */
 export const StatusBadge: React.FC<{
   status: StudyPlanStatus;
   size?: 'sm' | 'md';

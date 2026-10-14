@@ -1,7 +1,3 @@
-/**
- * Formats canonical YYYY-MM-DD or ISO timestamp into human-readable date
- * Example: "2026-10-20" -> "Oct 20, 2026"
- */
 export const formatDate = (dateStr: string): string => {
   if (!dateStr) return '';
   const date = new Date(dateStr.includes('T') ? dateStr : `${dateStr}T00:00:00`);
@@ -14,10 +10,6 @@ export const formatDate = (dateStr: string): string => {
   }).format(date);
 };
 
-/**
- * Formats ISO date into relative or friendly label
- * Example: "Today", "Yesterday", or "Oct 14"
- */
 export const formatRelativeTime = (isoString: string): string => {
   if (!isoString) return '';
   const date = new Date(isoString);
@@ -36,9 +28,6 @@ export const formatRelativeTime = (isoString: string): string => {
   }).format(date);
 };
 
-/**
- * Returns greeting based on current local time
- */
 export const getTimeOfDayGreeting = (): string => {
   const hour = new Date().getHours();
   if (hour < 12) return 'Good morning';

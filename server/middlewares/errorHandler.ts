@@ -30,15 +30,12 @@ export const errorHandler = (
     stack = err.stack;
   }
 
-  // 1. Custom AppError
   if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
     errorDetails = err.details;
     isOperational = err.isOperational;
-  }
-  // 2. Zod Validation Error
-  else if (err instanceof ZodError) {
+  } else if (err instanceof ZodError) {
     statusCode = 400;
     message = 'Validation failed';
     isOperational = true;
@@ -46,16 +43,12 @@ export const errorHandler = (
       field: issue.path.join('.') || 'body',
       message: issue.message,
     }));
-  }
-  // 3. Mongoose CastError (invalid ObjectId, etc.)
-  else if ((err as MongooseErrorLike)?.name === 'CastError') {
+  } else if ((err as MongooseErrorLike)?.name === 'CastError') {
     const castErr = err as MongooseErrorLike;
     statusCode = 400;
     message = `Invalid format for resource parameter '${castErr.path}'`;
     isOperational = true;
-  }
-  // 4. Mongoose ValidationError
-  else if ((err as MongooseErrorLike)?.name === 'ValidationError') {
+  } else if ((err as MongooseErrorLike)?.name === 'ValidationError') {
     const valErr = err as MongooseErrorLike;
     statusCode = 400;
     message = 'Validation failed';
@@ -66,18 +59,14 @@ export const errorHandler = (
         message: e.message,
       }));
     }
-  }
-  // 5. MongoDB Duplicate Key (Code 11000)
-  else if ((err as MongooseErrorLike)?.code === 11000) {
+  } else if ((err as MongooseErrorLike)?.code === 11000) {
     const dupErr = err as MongooseErrorLike;
     statusCode = 409;
     const duplicateFields = dupErr.keyValue ? Object.keys(dupErr.keyValue).join(', ') : 'field';
     message = `Duplicate value provided for: ${duplicateFields}`;
     isOperational = true;
     errorDetails = dupErr.keyValue;
-  }
-  // 6. JWT Errors
-  else if ((err as Error)?.name === 'JsonWebTokenError') {
+  } else if ((err as Error)?.name === 'JsonWebTokenError') {
     statusCode = 401;
     message = 'Invalid authentication token';
     isOperational = true;
@@ -85,9 +74,7 @@ export const errorHandler = (
     statusCode = 401;
     message = 'Authentication token has expired';
     isOperational = true;
-  }
-  // 7. Malformed JSON payload syntax error
-  else if (
+  } else if (
     err instanceof SyntaxError &&
     'status' in (err as unknown as Record<string, unknown>) &&
     (err as unknown as Record<string, unknown>)['status'] === 400
@@ -95,9 +82,7 @@ export const errorHandler = (
     statusCode = 400;
     message = 'Malformed JSON payload provided in request body';
     isOperational = true;
-  }
-  // 8. General unexpected error
-  else {
+  } else {
     logger.error('Unhandled Server Error:', err);
     if (env.NODE_ENV === 'production' && !isOperational) {
       message = 'An unexpected internal server error occurred';

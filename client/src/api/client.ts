@@ -1,9 +1,6 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import type { ApiResponse, ApiErrorResponse } from '../types/api';
 
-/**
- * Standardized client-side API error class
- */
 export class AppApiError extends Error {
   statusCode: number;
   errors?: Array<{ field: string; message: string }>;
@@ -22,18 +19,11 @@ export class AppApiError extends Error {
     this.timestamp = timestamp;
   }
 
-  /**
-   * Helper to retrieve field-specific validation error message
-   */
   getFieldError(field: string): string | undefined {
     return this.errors?.find((e) => e.field === field)?.message;
   }
 }
 
-/**
- * Pre-configured Axios instance
- * Automatically passes session cookies with withCredentials=true
- */
 export const apiClient: AxiosInstance = axios.create({
   baseURL: '/api/v1',
   withCredentials: true,
@@ -45,7 +35,6 @@ export const apiClient: AxiosInstance = axios.create({
   },
 });
 
-// Response interceptor for consistent error normalization
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiErrorResponse>) => {
@@ -73,7 +62,6 @@ apiClient.interceptors.response.use(
         )
       );
     } else if (error.request) {
-      // Network failure / server unreachable
       return Promise.reject(
         new AppApiError(
           'Network error: Unable to connect to server. Please check your internet connection.',
@@ -86,9 +74,6 @@ apiClient.interceptors.response.use(
   }
 );
 
-/**
- * Type-safe API request helpers
- */
 export const api = {
   get: async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
     const response = await apiClient.get<ApiResponse<T>>(url, config);

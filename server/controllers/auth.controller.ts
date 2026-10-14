@@ -6,10 +6,6 @@ import { hashPassword, comparePassword } from '../utils/password';
 import { signAuthToken, setAuthCookie, clearAuthCookie } from '../utils/jwt';
 import { RegisterInput, LoginInput } from '../validations/auth.validation';
 
-/**
- * Register a new student account
- * POST /api/v1/auth/register
- */
 export const register = async (
   req: Request<unknown, unknown, RegisterInput>,
   res: Response,
@@ -19,7 +15,6 @@ export const register = async (
     const { name, email, password } = req.body;
     const normalizedEmail = email.toLowerCase().trim();
 
-    // 1. Verify email uniqueness
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return next(
@@ -27,10 +22,8 @@ export const register = async (
       );
     }
 
-    // 2. Hash password with bcrypt
     const passwordHash = await hashPassword(password);
 
-    // 3. Create student record
     const user = await User.create({
       name: name.trim(),
       email: normalizedEmail,
@@ -38,7 +31,6 @@ export const register = async (
       role: 'student',
     });
 
-    // 4. Issue JWT and set secure HttpOnly cookie
     const token = signAuthToken({
       id: user._id.toString(),
       email: user.email,
@@ -47,7 +39,6 @@ export const register = async (
 
     setAuthCookie(res, token);
 
-    // 5. Send sanitized response (passwordHash never exposed)
     sendSuccess(
       res,
       {
@@ -67,10 +58,6 @@ export const register = async (
   }
 };
 
-/**
- * Authenticate student credentials and start session
- * POST /api/v1/auth/login
- */
 export const login = async (
   req: Request<unknown, unknown, LoginInput>,
   res: Response,
@@ -80,23 +67,18 @@ export const login = async (
     const { email, password } = req.body;
     const normalizedEmail = email.toLowerCase().trim();
 
-    // 1. Query user with explicit passwordHash projection
     const user = await User.findOne({ email: normalizedEmail }).select('+passwordHash');
-
-    // Generic error message to prevent account enumeration
     const invalidCredentialsMessage = 'Invalid email or password.';
 
     if (!user) {
       return next(AppError.unauthorized(invalidCredentialsMessage));
     }
 
-    // 2. Constant-time password comparison
     const isPasswordValid = await comparePassword(password, user.passwordHash);
     if (!isPasswordValid) {
       return next(AppError.unauthorized(invalidCredentialsMessage));
     }
 
-    // 3. Generate JWT and set HttpOnly cookie
     const token = signAuthToken({
       id: user._id.toString(),
       email: user.email,
@@ -105,7 +87,6 @@ export const login = async (
 
     setAuthCookie(res, token);
 
-    // 4. Return authenticated user payload
     sendSuccess(
       res,
       {

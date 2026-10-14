@@ -127,8 +127,6 @@ export const useUpdateProgress = () => {
           });
         }
       }
-
-      // 4. Optimistically update ['progress', 'summary']
       if (previousSummary) {
         const delta = isCompleted ? 1 : -1;
         const newCompleted = Math.max(

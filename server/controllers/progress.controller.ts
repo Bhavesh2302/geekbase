@@ -3,17 +3,13 @@ import { ProgressService } from '../dbservices/progress.service';
 import { sendSuccess } from '../utils/apiResponse';
 import { UpdateProgressInput } from '../validations/progress.validation';
 
-/**
- * PUT /api/v1/progress/:problemId
- * Atomically marks problem complete or incomplete
- */
 export const updateProgress = async (
   req: Request<{ problemId: string }, unknown, UpdateProgressInput>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user!.id; // Authenticated user ID (never from client body)
+    const userId = req.user!.id;
     const { problemId } = req.params;
     const { isCompleted } = req.body;
 
@@ -36,10 +32,6 @@ export const updateProgress = async (
   }
 };
 
-/**
- * GET /api/v1/progress
- * Retrieves authenticated student's saved problem completion records
- */
 export const getUserProgress = async (
   req: Request,
   res: Response,
@@ -55,10 +47,6 @@ export const getUserProgress = async (
   }
 };
 
-/**
- * GET /api/v1/progress/summary
- * Retrieves overall, difficulty-wise, and chapter-wise progress analytics
- */
 export const getProgressSummary = async (
   req: Request,
   res: Response,

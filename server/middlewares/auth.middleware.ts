@@ -18,60 +18,39 @@ declare global {
   }
 }
 
-/**
- * Authentication Middleware:
- * Extracts and verifies JWT from HttpOnly cookie or Authorization Bearer header.
- * Attaches the authenticated user to `req.user`.
- */
 export const requireAuth = async (
   req: Request,
   _res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    let token: string | undefined = undefined;
-
-    // 1. Try reading token from HttpOnly cookie
-    if (req.cookies && req.cookies[AUTH_COOKIE_NAME]) {
-      token = req.cookies[AUTH_COOKIE_NAME];
-    }
-    // 2. Fallback to Authorization: Bearer <token> header
-    else if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer ')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
-    }
+    const authHeader = req.headers.authorization;
+    const token =
+      req.cookies?.[AUTH_COOKIE_NAME] ??
+      (authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : undefined);
 
     if (!token) {
-      return next(
-        AppError.unauthorized('Authentication required. Please log in to proceed.')
-      );
+      return next(AppError.unauthorized('Authentication required. Please log in to proceed.'));
     }
 
-    // 3. Verify token signature and expiration
     let decoded: ReturnType<typeof verifyAuthToken>;
     try {
       decoded = verifyAuthToken(token);
     } catch (err: unknown) {
-      const errorName = (err as Error)?.name;
-      if (errorName === 'TokenExpiredError') {
-        return next(
-          AppError.unauthorized('Your session has expired. Please log in again.')
-        );
-      }
+      const isExpired = (err as Error)?.name === 'TokenExpiredError';
       return next(
-        AppError.unauthorized('Invalid authentication token. Please log in again.')
+        AppError.unauthorized(
+          isExpired
+            ? 'Your session has expired. Please log in again.'
+            : 'Invalid authentication token. Please log in again.'
+        )
       );
     }
 
-    // 4. Verify user exists in database
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id).select('name email role');
     if (!user) {
       return next(
-        AppError.unauthorized(
-          'The account associated with this session no longer exists.'
-        )
+        AppError.unauthorized('The account associated with this session no longer exists.')
       );
     }
 
