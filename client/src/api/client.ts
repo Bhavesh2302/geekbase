@@ -24,8 +24,17 @@ export class AppApiError extends Error {
   }
 }
 
+const resolveApiBaseUrl = (): string => {
+  const customUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_BASE_URL;
+  if (!customUrl) {
+    return '/api/v1';
+  }
+  const cleanUrl = customUrl.replace(/\/+$/, '');
+  return cleanUrl.endsWith('/api/v1') ? cleanUrl : `${cleanUrl}/api/v1`;
+};
+
 export const apiClient: AxiosInstance = axios.create({
-  baseURL: '/api/v1',
+  baseURL: resolveApiBaseUrl(),
   withCredentials: true,
   timeout: 15000,
   headers: {
