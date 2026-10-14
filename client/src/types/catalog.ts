@@ -26,6 +26,7 @@ export interface Topic {
   slug: string;
   description: string;
   order: number;
+  problemCount?: number;
   problems?: Problem[];
   createdAt?: string;
   updatedAt?: string;
@@ -38,6 +39,8 @@ export interface Chapter {
   description: string;
   order: number;
   isActive: boolean;
+  topicCount?: number;
+  problemCount?: number;
   topics?: Topic[];
   createdAt?: string;
   updatedAt?: string;
