@@ -58,6 +58,5 @@ const chapterSchema = new Schema<IChapterDocument>(
 
 // Indexes
 chapterSchema.index({ order: 1 });
-chapterSchema.index({ slug: 1 }, { unique: true });
 
 export const Chapter: Model<IChapterDocument> = model<IChapterDocument>('Chapter', chapterSchema);
