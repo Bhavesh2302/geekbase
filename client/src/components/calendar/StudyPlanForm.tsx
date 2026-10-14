@@ -144,7 +144,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Scheduled Date */}
       <div>
         <label
           htmlFor="plan-date-input"
@@ -163,7 +162,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
         </div>
       </div>
 
-      {/* When creating: Cascading Problem Picker */}
       {!isEditing ? (
         <div className="space-y-3 p-3.5 bg-slate-950/60 rounded-xl border border-slate-800/80">
           <div className="flex items-center gap-2 pb-1 border-b border-slate-800/60">
@@ -173,7 +171,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
             </span>
           </div>
 
-          {/* 1. Chapter Dropdown */}
           <div>
             <label
               htmlFor="chapter-select"
@@ -197,7 +194,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
             </select>
           </div>
 
-          {/* 2. Topic Dropdown */}
           <div>
             <label
               htmlFor="topic-select"
@@ -225,7 +221,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
             </select>
           </div>
 
-          {/* 3. Problem Dropdown */}
           <div>
             <label
               htmlFor="problem-select"
@@ -258,7 +253,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
           </div>
         </div>
       ) : (
-        /* When editing: Show static problem info */
         <div className="p-3.5 bg-slate-950/60 rounded-xl border border-slate-800/80">
           <p className="text-xs text-slate-400 font-medium mb-1">
             Target Problem
@@ -274,7 +268,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
         </div>
       )}
 
-      {/* Status Selection */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
           Status
@@ -314,7 +307,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
         </div>
       </div>
 
-      {/* Notes */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label
@@ -343,7 +335,6 @@ export const StudyPlanForm: React.FC<StudyPlanFormProps> = ({
         )}
       </div>
 
-      {/* Action Buttons */}
       <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800/80">
         <Button
           type="button"

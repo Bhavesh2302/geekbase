@@ -2,24 +2,10 @@ import { Schema, model, Document, Model, Types } from 'mongoose';
 
 export type StudyPlanStatus = 'planned' | 'completed' | 'skipped';
 
-/**
- * TIMEZONE POLICY:
- * In study planning and interactive calendar management (e.g., FullCalendar),
- * users assign problems to a specific calendar day in their local context.
- *
- * Storing scheduled dates as timestamp objects (e.g. UTC ISO 2026-10-15T00:00:00.000Z)
- * introduces boundary-shifting bugs when accessed across different client timezones
- * (e.g., UTC+05:30 IST vs UTC-08:00 PST shifts dates forward or backward by a day).
- *
- * POLICY SPECIFICATION:
- * 1. `scheduledDate` is stored strictly as a canonical `YYYY-MM-DD` string (e.g., "2026-10-15").
- * 2. It represents the calendar grid date selected by the student, invariant to server or client timezone conversions.
- * 3. System-generated `createdAt` and `updatedAt` remain UTC ISO Timestamps for auditing.
- */
 export interface IStudyPlan {
   userId: Types.ObjectId;
   problemId: Types.ObjectId;
-  scheduledDate: string; // Canonical YYYY-MM-DD format
+  scheduledDate: string; // YYYY-MM-DD
   status: StudyPlanStatus;
   notes: string;
   createdAt: Date;

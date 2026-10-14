@@ -24,14 +24,12 @@ export const ProgressHero: React.FC<ProgressHeroProps> = ({
   const isZeroProgress = completedProblems === 0;
   const isFullyCompleted = totalProblems > 0 && completedProblems === totalProblems;
 
-  // Circular progress calculations for SVG ring gauge
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (completionPercentage / 100) * circumference;
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
-      {/* Background glow effects */}
       <div
         className={`absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-20 ${
           isFullyCompleted
@@ -43,7 +41,6 @@ export const ProgressHero: React.FC<ProgressHeroProps> = ({
       />
 
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
-        {/* Left: Overall Circular Progress Gauge */}
         <div className="flex flex-col sm:flex-row items-center gap-6 shrink-0">
           <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
             <svg
@@ -51,7 +48,6 @@ export const ProgressHero: React.FC<ProgressHeroProps> = ({
               viewBox="0 0 128 128"
               aria-hidden="true"
             >
-              {/* Track circle */}
               <circle
                 cx="64"
                 cy="64"
@@ -61,7 +57,6 @@ export const ProgressHero: React.FC<ProgressHeroProps> = ({
                 className="text-slate-800/80"
                 fill="transparent"
               />
-              {/* Progress circle */}
               <circle
                 cx="64"
                 cy="64"
@@ -94,7 +89,6 @@ export const ProgressHero: React.FC<ProgressHeroProps> = ({
               </defs>
             </svg>
 
-            {/* Inner Percentage Display */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
               <span className="text-3xl font-extrabold text-white tracking-tight">
                 {completionPercentage}%
@@ -105,7 +99,6 @@ export const ProgressHero: React.FC<ProgressHeroProps> = ({
             </div>
           </div>
 
-          {/* Core Numbers */}
           <div className="text-center sm:text-left space-y-1.5">
             <div className="flex items-center justify-center sm:justify-start gap-2">
               <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">

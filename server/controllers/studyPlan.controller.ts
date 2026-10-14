@@ -6,10 +6,6 @@ import {
   UpdateStudyPlanInput,
 } from '../validations/studyPlan.validation';
 
-/**
- * GET /api/v1/study-plans?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
- * Retrieves student's scheduled calendar items
- */
 export const getStudyPlans = async (
   req: Request<
     unknown,
@@ -35,10 +31,6 @@ export const getStudyPlans = async (
   }
 };
 
-/**
- * POST /api/v1/study-plans
- * Schedules a new DSA study session on the calendar
- */
 export const createStudyPlan = async (
   req: Request<unknown, unknown, CreateStudyPlanInput>,
   res: Response,
@@ -54,10 +46,6 @@ export const createStudyPlan = async (
   }
 };
 
-/**
- * PATCH /api/v1/study-plans/:planId
- * Updates date, status, or notes on a scheduled plan with ownership enforcement
- */
 export const updateStudyPlan = async (
   req: Request<{ planId: string }, unknown, UpdateStudyPlanInput>,
   res: Response,
@@ -75,10 +63,6 @@ export const updateStudyPlan = async (
   }
 };
 
-/**
- * DELETE /api/v1/study-plans/:planId
- * Removes a scheduled plan from the user's study calendar
- */
 export const deleteStudyPlan = async (
   req: Request<{ planId: string }>,
   res: Response,

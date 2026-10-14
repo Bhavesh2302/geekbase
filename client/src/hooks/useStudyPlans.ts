@@ -21,9 +21,6 @@ export const getStudyPlansQueryKey = (params?: GetStudyPlansParams) => {
     : (['studyPlans'] as const);
 };
 
-/**
- * Fetch student's scheduled study plans for an optional date range
- */
 export const useStudyPlans = (params?: GetStudyPlansParams) => {
   return useQuery<StudyPlan[], Error>({
     queryKey: getStudyPlansQueryKey(params),
@@ -37,13 +34,10 @@ export const useStudyPlans = (params?: GetStudyPlansParams) => {
       const response = await api.get<{ plans: StudyPlan[] }>(url);
       return response.plans || [];
     },
-    staleTime: 1000 * 60 * 2, // 2 minutes
+    staleTime: 1000 * 60 * 2,
   });
 };
 
-/**
- * Mutation to schedule a problem on the study calendar
- */
 export const useCreateStudyPlan = () => {
   const queryClient = useQueryClient();
 
@@ -57,7 +51,6 @@ export const useCreateStudyPlan = () => {
         .getState()
         .showToast('Study session scheduled successfully.', 'success');
 
-      // Update queries containing this date or range
       queryClient.invalidateQueries({ queryKey: STUDY_PLANS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEY });
       return createdPlan;
@@ -79,9 +72,6 @@ export interface UpdateStudyPlanContext {
   previousQueries?: Array<[readonly unknown[], StudyPlan[] | undefined]>;
 }
 
-/**
- * Mutation to update scheduled date, notes, or status on a study plan
- */
 export const useUpdateStudyPlan = () => {
   const queryClient = useQueryClient();
 
@@ -102,7 +92,6 @@ export const useUpdateStudyPlan = () => {
     onMutate: async ({ planId, data }) => {
       await queryClient.cancelQueries({ queryKey: STUDY_PLANS_QUERY_KEY });
 
-      // Snapshot all matching study plan queries for rollback
       const queries = queryClient.getQueriesData<StudyPlan[]>({
         queryKey: STUDY_PLANS_QUERY_KEY,
       });
@@ -130,7 +119,6 @@ export const useUpdateStudyPlan = () => {
     },
 
     onError: (err, _variables, context) => {
-      // Roll back
       if (context?.previousQueries) {
         context.previousQueries.forEach(([key, data]) => {
           queryClient.setQueryData(key, data);
@@ -164,9 +152,6 @@ export interface DeleteStudyPlanContext {
   previousQueries?: Array<[readonly unknown[], StudyPlan[] | undefined]>;
 }
 
-/**
- * Mutation to delete a scheduled study plan
- */
 export const useDeleteStudyPlan = () => {
   const queryClient = useQueryClient();
 

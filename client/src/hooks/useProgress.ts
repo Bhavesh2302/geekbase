@@ -71,12 +71,12 @@ export const useUpdateProgress = () => {
       problemTitle,
       slug,
     }) => {
-      // 1. Cancel in-flight queries so out-of-order responses don't overwrite optimistic state
-      await queryClient.cancelQueries({ queryKey: PROGRESS_QUERY_KEY });
-      await queryClient.cancelQueries({ queryKey: PROGRESS_SUMMARY_QUERY_KEY });
-      await queryClient.cancelQueries({ queryKey: DASHBOARD_QUERY_KEY });
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: PROGRESS_QUERY_KEY }),
+        queryClient.cancelQueries({ queryKey: PROGRESS_SUMMARY_QUERY_KEY }),
+        queryClient.cancelQueries({ queryKey: DASHBOARD_QUERY_KEY }),
+      ]);
 
-      // 2. Snapshot current state for rollback
       const previousProgress =
         queryClient.getQueryData<UserProgressResponseData>(PROGRESS_QUERY_KEY);
       const previousSummary =
@@ -84,7 +84,6 @@ export const useUpdateProgress = () => {
       const previousDashboard =
         queryClient.getQueryData<DashboardSummary>(DASHBOARD_QUERY_KEY);
 
-      // 3. Optimistically update ['progress']
       if (previousProgress) {
         const currentCompletedSet = new Set(previousProgress.completedProblemIds);
         const wasCompleted = currentCompletedSet.has(problemId);
@@ -195,7 +194,6 @@ export const useUpdateProgress = () => {
         });
       }
 
-      // 5. Optimistically update ['dashboard', 'summary']
       if (previousDashboard) {
         const delta = isCompleted ? 1 : -1;
         const newCompleted = Math.max(
@@ -264,12 +262,10 @@ export const useUpdateProgress = () => {
         });
       }
 
-      // Return context for potential rollback
       return { previousProgress, previousSummary, previousDashboard };
     },
 
     onError: (err, variables, context) => {
-      // Rollback all caches from snapshot
       if (context?.previousProgress) {
         queryClient.setQueryData(PROGRESS_QUERY_KEY, context.previousProgress);
       }
@@ -303,7 +299,6 @@ export const useUpdateProgress = () => {
     },
 
     onSettled: () => {
-      // Re-synchronize authoritative server state
       queryClient.invalidateQueries({ queryKey: PROGRESS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: PROGRESS_SUMMARY_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: DASHBOARD_QUERY_KEY });

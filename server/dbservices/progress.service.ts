@@ -41,13 +41,11 @@ export class ProgressService {
     const problemObjId = new Types.ObjectId(problemId);
     const userObjId = new Types.ObjectId(userId);
 
-    // 1. Verify problem exists
     const problemExists = await Problem.exists({ _id: problemObjId });
     if (!problemExists) {
       throw AppError.notFound(`Problem with ID '${problemId}' not found`);
     }
 
-    // 2. Atomic upsert using unique compound index (userId, problemId)
     const progress = await UserProgress.findOneAndUpdate(
       { userId: userObjId, problemId: problemObjId },
       {
@@ -96,9 +94,7 @@ export class ProgressService {
   static async getProgressSummary(userId: string): Promise<ProgressSummaryResponse> {
     const userObjId = new Types.ObjectId(userId);
 
-    // Parallel execution of Chapter-wise and Difficulty-wise aggregation pipelines
     const [chapterAggResults, difficultyAggResults] = await Promise.all([
-      // 1. Chapter-wise breakdown pipeline
       Chapter.aggregate([
         { $match: { isActive: true } },
         { $sort: { order: 1 } },
@@ -150,7 +146,6 @@ export class ProgressService {
         },
       ]),
 
-      // 2. Difficulty breakdown pipeline
       Problem.aggregate([
         {
           $lookup: {
@@ -186,7 +181,6 @@ export class ProgressService {
       ]),
     ]);
 
-    // Format chapter statistics
     const chapterStats: ChapterProgressStat[] = chapterAggResults.map((c) => {
       const total = c.totalProblems || 0;
       const completed = c.completedProblems || 0;
@@ -203,7 +197,6 @@ export class ProgressService {
       };
     });
 
-    // Format difficulty statistics default map
     const difficultyMap: Record<ProblemDifficulty, DifficultyProgressStat> = {
       Easy: { total: 0, completed: 0, percentage: 0 },
       Medium: { total: 0, completed: 0, percentage: 0 },
