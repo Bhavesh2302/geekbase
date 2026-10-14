@@ -7,6 +7,7 @@ import { useAuthStore } from './store/authStore';
 // Layouts
 import { AppLayout } from './components/layout/AppLayout';
 import { PublicLayout } from './components/layout/PublicLayout';
+import { ToastContainer } from './components/ui/ToastContainer';
 
 // Auth Guards
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -55,6 +56,7 @@ export const App: React.FC = () => {
           {/* 404 Fallback */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </QueryClientProvider>
   );

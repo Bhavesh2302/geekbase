@@ -37,7 +37,7 @@ export const ProblemsPage: React.FC = () => {
     isError: isProblemsError,
     error: problemsError,
     refetch: refetchProblems,
-  } = useProblems({ limit: 100 });
+  } = useProblems({ limit: 500 });
 
   const {
     data: progressData,
@@ -253,9 +253,16 @@ export const ProblemsPage: React.FC = () => {
             const topics = topicsByChapterId[chapter._id] || [];
             const stat = chapterStatsMap.get(chapter._id);
 
-            // Compute chapter-specific problems matching current filter
-            const chapterTotalProblems = stat?.total || chapter.problemCount || 0;
-            const chapterCompletedProblems = stat?.completed || 0;
+            // Calculate completed problems directly from chapter's topics or from stat
+            const chapterTopicProblems = topics.flatMap((t) => problemsByTopicId[t._id] || []);
+            const calculatedChapterCompleted = chapterTopicProblems.filter((p) =>
+              completedProblemIds.has(p._id)
+            ).length;
+
+            const chapterTotalProblems =
+              stat?.total || chapterTopicProblems.length || chapter.problemCount || 0;
+            const chapterCompletedProblems =
+              stat !== undefined ? stat.completed : calculatedChapterCompleted;
 
             // Expanded if in set OR default Chapter 1 expanded initially if set is empty
             const isChapterExpanded =

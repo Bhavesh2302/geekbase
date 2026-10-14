@@ -77,6 +77,7 @@ export const TopicSection: React.FC<TopicSectionProps> = ({
                 problem={problem}
                 isCompleted={completedProblemIds.has(problem._id)}
                 index={index + 1}
+                chapterId={topic.chapterId}
               />
             ))
           )}
